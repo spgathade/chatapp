@@ -5,6 +5,7 @@ import { UsecurrentRoom } from '../../../Context/CurrentRoomContext';
 import { useMediaQuery } from '../../../misc/custom-hooks';
 import EditRoomModal from './EditRoomModal';
 import GroupModalBtn from './GroupModalBtn';
+import SendfcmBtnModal from './SendfcmBtnModal';
 
 const Top = () => {
   const name = UsecurrentRoom(value => value.name);
@@ -33,7 +34,7 @@ const Top = () => {
         </ButtonToolbar>
       </div>
       <div className="d-flex align-items-center justify-content-between">
-        <span>hello</span>
+        {Admin && <SendfcmBtnModal />}
         <GroupModalBtn />
       </div>
     </div>

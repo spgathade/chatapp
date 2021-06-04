@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
+import { useParams } from 'react-router';
 import {
   Alert,
   Button,
@@ -10,21 +11,22 @@ import {
   Modal,
   Schema,
 } from 'rsuite';
-import firebase from 'firebase/app';
-import { useModalState } from '../../misc/custom-hooks';
-import { auth, database } from '../../misc/firebase';
+import { useModalState } from '../../../misc/custom-hooks';
+import { functions } from '../../../misc/firebase';
 
-const CreateModalButton = () => {
+const SendfcmBtnModal = () => {
+  const { chatId } = useParams();
+
   const { StringType } = Schema.Types;
 
   const Model = Schema.Model({
-    name: StringType().isRequired('Group name is required'),
-    description: StringType().isRequired('Description is required'),
+    title: StringType().isRequired('Title is required'),
+    message: StringType().isRequired('Message is required'),
   });
 
   const initialState = {
-    name: '',
-    description: '',
+    title: '',
+    message: '',
   };
   const { Open, isOpen, Close } = useModalState();
   const [FormValue, setFormValue] = useState(initialState);
@@ -42,37 +44,29 @@ const CreateModalButton = () => {
 
     setLoading(true);
 
-    const NewRoomData = {
-      ...FormValue,
-      createdAt: firebase.database.ServerValue.TIMESTAMP,
-      admin: {
-        [auth.currentUser.uid]: true,
-      },
-      fcmUsers: {
-        [auth.currentUser.uid]: true,
-      },
-    };
     try {
-      await database.ref('rooms').push(NewRoomData);
+      const sendFcm = functions.httpsCallable('sendFcm');
+      await sendFcm({ chatId, ...FormValue });
+
       setLoading(false);
       setFormValue(initialState);
       Close();
-      Alert.success(`${FormValue.name} has been created`, 4000);
+
+      Alert.info('Notification has been send', 4000);
     } catch (err) {
-      setLoading(false);
       Alert.error(err.message, 4000);
     }
   };
 
   return (
-    <div className="mt-2">
-      <Button block color="green" onClick={Open}>
-        <Icon icon="creative" /> Create New Chat Group
+    <>
+      <Button appearance="primary" size="xs" onClick={Open}>
+        <Icon icon="podcast" /> Broadcast Message
       </Button>
 
       <Modal show={isOpen} onHide={Close}>
         <Modal.Header>
-          <Modal.Title>New Chat Group</Modal.Title>
+          <Modal.Title>Send notification to group users</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form
@@ -83,28 +77,28 @@ const CreateModalButton = () => {
             ref={FormRef}
           >
             <FormGroup>
-              <ControlLabel>Group Name</ControlLabel>
-              <FormControl name="name" placeholder="Enter Chat Group Name" />
+              <ControlLabel>Title</ControlLabel>
+              <FormControl name="title" placeholder="Enter message Title..." />
             </FormGroup>
             <FormGroup>
-              <ControlLabel>Description</ControlLabel>
+              <ControlLabel>Message</ControlLabel>
               <FormControl
                 componentClass="textarea"
                 rows={5}
-                name="description"
-                placeholder="Enter Group Description..."
+                name="message"
+                placeholder="Enter notification Message..."
               />
             </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button block onClick={Submit} disabled={Loading}>
-            Create New Chat Group
+            Publish Message
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </>
   );
 };
 
-export default CreateModalButton;
+export default SendfcmBtnModal;

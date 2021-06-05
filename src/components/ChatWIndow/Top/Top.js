@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ButtonToolbar, Icon } from 'rsuite';
 import { UsecurrentRoom } from '../../../Context/CurrentRoomContext';
 import { useMediaQuery } from '../../../misc/custom-hooks';
+import AskFcmBtnModal from './AskFcmBtnModal';
 import EditRoomModal from './EditRoomModal';
 import GroupModalBtn from './GroupModalBtn';
 import SendfcmBtnModal from './SendfcmBtnModal';
@@ -13,7 +14,7 @@ const Top = () => {
   const Admin = UsecurrentRoom(value => value.isAdmin);
 
   return (
-    <div>
+    <>
       <div className="d-flex justify-content-between align-items-center">
         <h4 className="d-flex align-items-center text-disappear">
           <Icon
@@ -30,6 +31,7 @@ const Top = () => {
           <span className="text-disappear">{name}</span>
         </h4>
         <ButtonToolbar className="ws-nowrap">
+          <AskFcmBtnModal />
           {Admin && <EditRoomModal />}
         </ButtonToolbar>
       </div>
@@ -37,7 +39,7 @@ const Top = () => {
         {Admin && <SendfcmBtnModal />}
         <GroupModalBtn />
       </div>
-    </div>
+    </>
   );
 };
 

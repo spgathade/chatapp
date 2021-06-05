@@ -4,7 +4,7 @@ importScripts(
   'https://www.gstatic.com/firebasejs/7.15.0/firebase-messaging.js'
 );
 
-const firebaseApp = initializeApp({
+firebase.initializeApp({
   apiKey: 'AIzaSyBgIhIXfB-F-h71CJSpA-RzKThkU98i4JI',
   authDomain: 'chatapp-be541.firebaseapp.com',
   projectId: 'chatapp-be541',
@@ -14,4 +14,4 @@ const firebaseApp = initializeApp({
   measurementId: 'G-0XMMPVD12K',
 });
 
-getMessaging(firebaseApp);
+firebase.messaging();

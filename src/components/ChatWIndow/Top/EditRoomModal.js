@@ -36,7 +36,7 @@ const EditRoomModal = () => {
   };
 
   return (
-    <div>
+    <>
       <Button className="br-circle" size="sm" color="red" onClick={Open}>
         a
       </Button>
@@ -68,7 +68,7 @@ const EditRoomModal = () => {
           </Button>
         </Drawer.Footer>
       </Drawer>
-    </div>
+    </>
   );
 };
 
